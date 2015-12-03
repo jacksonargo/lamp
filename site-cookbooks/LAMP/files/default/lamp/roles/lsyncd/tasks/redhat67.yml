@@ -1,0 +1,11 @@
+---
+
+# Install
+- name: Install lsync from repo for Redhat6+
+  yum: name=lsyncd state=present
+
+# Copy configuation
+- name: Configure lsync for Redhat6+
+  copy: src=lsyncd.conf dest=/etc/lsyncd.conf
+
+

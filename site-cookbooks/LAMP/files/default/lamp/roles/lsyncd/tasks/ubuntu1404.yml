@@ -1,0 +1,15 @@
+---
+
+# Install
+- name: Install lsync from repo for Ubuntu14.04
+  apt: name=lsyncd state=present
+
+# Configure
+- file: path=/etc/lsyncd state=directory
+- file: path=/var/log/lsyncd state=directory
+- name: Configure lsync for Ubuntu14.04
+  template: src=lsyncd.conf.j2
+        dest=/etc/lsyncd/lsyncd.conf.lua
+        owner=root
+        group=root
+        mode=0644

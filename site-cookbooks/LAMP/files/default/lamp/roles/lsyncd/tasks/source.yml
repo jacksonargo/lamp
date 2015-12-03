@@ -1,0 +1,33 @@
+---
+
+- name: Install lsyncd dependencies RHEL
+  when: ansible_os_family == 'Redhat'
+  yum: name={{item}} state=present
+  with_items:
+   - lua
+   - lua-devel
+   - pkgconfig
+   - gcc
+   - asciidoc
+
+- name: Install lsyncd dependencies Ubuntu
+  when: ansible_os_family == 'Debian'
+  apt: name={{item}} state=present
+  with_items:
+   - lua5.1
+   - liblua5.1-dev
+   - pkg-config
+   - rsync
+   - asciidoc
+   - make
+
+- name: Copy lsyncd source
+  copy: src=lsyncd-2.1.5.tar.gz dest=/usr/local/src
+  register: deb_common_dl
+
+- name: Extract and build
+  
+- name: Install config
+
+- name: Make lsync log dir
+  file: path=/var/log/lsyncd

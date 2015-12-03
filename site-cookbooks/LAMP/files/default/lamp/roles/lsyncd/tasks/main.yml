@@ -1,0 +1,26 @@
+---
+
+# Include the lsync slaves file
+- name: Read in lsync slaves
+  include_vars: slaves.yml
+
+# For Redhat/Centos 6 or 7
+- when: ansible_os_family == 'RedHat' and
+        ansible_lsb.major_release|int >= 6
+  include: redhat67.yml
+
+# For Ubuntu14.04
+- when: ansible_distribution == "Ubuntu" and
+        ansible_distribution_version == "14.04"
+  include: ubuntu1404.yml
+
+# For everyone else
+#- when: (ansible_os_family != 'RedHat' or
+#            ansible_lsb.major_release|int < 6) and
+#        (ansible_distribution != "Ubuntu" or
+#            ansible_distribution_version != "14.04")
+#  include: source.yml
+
+# Restart lsyncd
+- name: Restart lsycd
+  service: name=lsyncd state=restarted

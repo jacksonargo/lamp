@@ -1,0 +1,25 @@
+settings {
+   logfile    = "/var/log/lsyncd/lsyncd.log",
+   statusFile = "/var/log/lsyncd/lsyncd-status.log",
+   statusInterval = 20
+}
+servers = {
+ {% for name in slaves %}
+ "{{ name }}",
+ {% endfor %}
+}
+ 
+for _, server in ipairs(servers) do
+sync {
+    default.rsyncssh,
+    source="/var/www/",
+    host=server,
+    targetdir="/var/www/",
+    rsync = {
+     archive = true,
+     acls = true,
+     verbose = true,
+     rsh = "/usr/bin/ssh -p 22 -o StrictHostKeyChecking=no"
+   },
+}
+end
