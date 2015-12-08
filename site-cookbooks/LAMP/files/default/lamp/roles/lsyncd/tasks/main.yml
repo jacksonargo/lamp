@@ -1,13 +1,21 @@
 ---
 
 # Include the lsync slaves file
+# This should be an array of slave ips/hosts. Ansible will only add this to the
+# config file, but not install ssh keys on the slave servers. That is left for
+# nova to handle.
+# Example slaves.yml:
+# ---
+# slaves:
+# - 192.168.3.2
+# - 192.168.3.3
 - name: Read in lsync slaves
   include_vars: slaves.yml
 
 # For Redhat/Centos 6 or 7
 - when: ansible_os_family == 'RedHat' and
         ansible_lsb.major_release|int >= 6
-  include: redhat67.yml
+  include: el67.yml
 
 # For Ubuntu14.04
 - when: ansible_distribution == "Ubuntu" and
