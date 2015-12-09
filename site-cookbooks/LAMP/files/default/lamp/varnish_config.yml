@@ -1,0 +1,13 @@
+# Set the varnish backend master
+# Default is localhost so that this works with no changes in single server envs
+backendmaster: "127.0.0.1"
+# Set the port for varnish to listen on
+# Default is 6081 assuming http lb passing to 6081 on attached servers
+varnishport: "6081"
+# Set the varnish backend port
+# Default is port 80 assuming apache/nginx listening on 80
+backendport: "80"
+# Choose which configuration temlate to use
+# Default is just a vanilla config that caches static buisiness
+# Choices are: vanilla, wordpress, drupal
+site_template: "vanilla"

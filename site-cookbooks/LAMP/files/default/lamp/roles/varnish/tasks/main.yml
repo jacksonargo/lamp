@@ -1,0 +1,45 @@
+---
+
+- name: Read in varnish settings
+  include_vars: varnish_config.yml
+
+# Install the varnish package
+- when: ansible_os_family == 'RedHat'
+  yum: name=varnish state=installed
+
+- when: ansible_distribution == "Ubuntu"
+  apt: name=varnish state=installed
+
+# Redhat 5 needs varnish2.0 template
+- when: ansible_os_family == 'RedHat' and
+        ansible_distribution_major_version == '5'
+  template: src=default20.vcl.j2
+            dest=/etc/varnish/default.vcl
+
+# Redhat 6 needs varnish2.1 template
+- when: ansible_os_family == 'RedHat' and
+        ansible_distribution_major_version == '6'
+  template: src=default21.vcl.j2
+            dest=/etc/varnish/default.vcl
+
+# Redhat 7 needs varnish4.x template
+- when: ansible_os_family == 'RedHat' and
+        ansible_distribution_major_version == '7'
+  template: src=default4x.vcl.j2
+            dest=/etc/varnish/default.vcl
+
+
+# Ubuntu12.04 needs varnish3.x template
+- when: ansible_distribution == "Ubuntu" and
+        ansible_distribution_version == "12.04"
+  template: src=default3x.vcl.j2
+            dest=/etc/varnish/default.vcl
+
+
+# Ubuntu14.04 needs varnish3.x template
+- when: ansible_distribution == "Ubuntu" and
+        ansible_distribution_version == "14.04"
+  template: src=default3x.vcl.j2
+            dest=/etc/varnish/default.vcl
+
+
