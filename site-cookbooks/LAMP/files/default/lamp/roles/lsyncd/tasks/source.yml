@@ -1,6 +1,6 @@
 ---
 
-- name: Install lsyncd dependencies RHEL
+- name: Install lsyncd dependencies for Redhat
   when: ansible_os_family == 'Redhat'
   yum: name={{item}} state=present
   with_items:
@@ -9,8 +9,9 @@
    - pkgconfig
    - gcc
    - asciidoc
+   - make
 
-- name: Install lsyncd dependencies Ubuntu
+- name: Install lsyncd dependencies for Debian
   when: ansible_os_family == 'Debian'
   apt: name={{item}} state=present
   with_items:
@@ -23,11 +24,25 @@
 
 - name: Copy lsyncd source
   copy: src=lsyncd-2.1.5.tar.gz dest=/usr/local/src
-  register: deb_common_dl
 
-- name: Extract and build
-  
-- name: Install config
+- name: Copy lsyncd build script
+  copy: src=lsyncd-build.sh dest=/root/lsyncd-build.sh mode=0775
 
-- name: Make lsync log dir
-  file: path=/var/log/lsyncd
+- name: Build lsyncd
+  shell: /root/lsyncd-build.sh creates=/usr/local/bin/lsyncd
+
+- name: Configure lsyncd for source install
+- file: path=/var/log/lsyncd state=directory
+- template: src=lsyncd.conf.j2
+        dest=/etc/lsyncd.conf
+        owner=root
+        group=root
+        mode=0644
+
+- name: Install lsyncd init script for Debian
+  when: ansible_os_family == 'Debian'
+  copy: src=lsyncd-init-el path=/etc/init.d/lsyncd 
+
+- name: Install lsyncd init script for Redhat
+  when: ansible_os_family == 'Redhat'
+  copy: src=lsyncd-init-deb path=/etc/init.d/lsyncd
