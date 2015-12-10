@@ -5,7 +5,6 @@
   yum: name=lsyncd state=present
 
 # Copy configuation
-- file: path=/etc/lsyncd state=directory
 - file: path=/var/log/lsyncd state=directory
 - name: Configure lsync for Rhel6+
   template: src=lsyncd.conf.j2
