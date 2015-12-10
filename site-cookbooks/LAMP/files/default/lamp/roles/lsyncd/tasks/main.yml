@@ -30,6 +30,3 @@
 #            ansible_distribution_version != "14.04")
 #  include: source.yml
 
-# Restart lsyncd
-- name: Restart lsycd
-  service: name=lsyncd state=restarted
