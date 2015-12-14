@@ -12,6 +12,9 @@
 - name: Read in lsync slaves
   include_vars: slaves.yml
 
+- name: Create lsyncd log directory
+  file: path=/var/log/lsyncd state=directory
+
 # For Redhat/Centos 6 or 7
 - when: ansible_os_family == 'RedHat' and
         (ansible_distribution_major_version == '6' or
@@ -23,10 +26,10 @@
         ansible_distribution_version == "14.04"
   include: ubuntu1404.yml
 
-# For everyone else
-#- when: (ansible_os_family != 'RedHat' or
-#            ansible_lsb.major_release|int < 6) and
-#        (ansible_distribution != "Ubuntu" or
-#            ansible_distribution_version != "14.04")
-#  include: source.yml
+# For el5, debians, and ubuntu12.04
+- when: (ansible_os_family != 'RedHat' or
+         ansible_distribution_major_version == '5') and
+        (ansible_distribution != "Ubuntu" or
+         ansible_distribution_version == "12.04")
+  include: source.yml
 

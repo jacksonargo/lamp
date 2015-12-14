@@ -1,11 +1,11 @@
 ---
+## Install/configure for Rhel 6 and 7
 
 # Install
 - name: Install lsync from repo for Rhel6+
   yum: name=lsyncd state=present
 
 # Copy configuation
-- file: path=/var/log/lsyncd state=directory
 - name: Configure lsync for Rhel6+
   template: src=lsyncd.conf.j2
         dest=/etc/lsyncd.conf

@@ -1,6 +1,11 @@
 ---
 
-- name: Install lsyncd dependencies RHEL
+## This builds lsyncd-2.1.5 from source
+## el5, Debians, and Ubuntu12.04 do not have an lsyncd-2.1.5 package,
+## and must build from source
+
+## Install rhel make deps
+- name: Install lsyncd dependencies for Redhat
   when: ansible_os_family == 'Redhat'
   yum: name={{item}} state=present
   with_items:
@@ -9,8 +14,10 @@
    - pkgconfig
    - gcc
    - asciidoc
+   - make
 
-- name: Install lsyncd dependencies Ubuntu
+## Install debian make deps
+- name: Install lsyncd dependencies for Debian
   when: ansible_os_family == 'Debian'
   apt: name={{item}} state=present
   with_items:
@@ -21,13 +28,56 @@
    - asciidoc
    - make
 
+## Now we copy over the tarball
 - name: Copy lsyncd source
   copy: src=lsyncd-2.1.5.tar.gz dest=/usr/local/src
-  register: deb_common_dl
 
-- name: Extract and build
-  
-- name: Install config
+## configure/make/build
+- name: Copy lsyncd build script
+  copy: src=lsyncd-build.sh dest=/root/lsyncd-build.sh mode=0775
 
-- name: Make lsync log dir
-  file: path=/var/log/lsyncd
+- name: Build lsyncd
+  shell: /root/lsyncd-build.sh creates=/usr/local/bin/lsyncd
+
+## Make the lsyncd configuration file
+- name: Configure lsyncd for source install
+  template: src=lsyncd.conf.j2
+        dest=/etc/lsyncd.conf
+        owner=root
+        group=root
+        mode=0644
+
+## Rhel5 init script
+- name: Install lsyncd init script for Rhel
+  when: ansible_os_family == 'Redhat'
+  copy: src=lsyncd-init-el
+        dest=/etc/init.d/lsyncd
+        owner=root
+        group=root
+        mode=0755
+
+## Debian init script
+- name: Install lsyncd init script for Debian
+  when: ansible_distribution == 'Debian'
+  copy: src=lsyncd-init-deb
+        dest=/etc/init.d/lsyncd
+        owner=root
+        group=root
+        mode=0755
+
+## Ubuntu uses upstart job
+- name: Install lsyncd upstart job for Ubuntu
+  when: ansible_distribution == 'Ubuntu'
+  copy: src=lsyncd-upstart
+        dest=/etc/init/lsyncd.conf
+        owner=root
+        group=root
+        mode=0644
+
+## Link the upstart job back into /etc/init.d/ for normal invoke
+- when: ansible_distribution_version == "12.04"
+  file: src=/lib/init/upstart-job
+        dest=/etc/init.d/lsyncd
+        state=link
+        owner=root
+        group=root
