@@ -25,8 +25,8 @@
 
 # For everyone else
 #- when: (ansible_os_family != 'RedHat' or
-#            ansible_lsb.major_release|int < 6) and
+#         ansible_distribution_major_version == '5') and
 #        (ansible_distribution != "Ubuntu" or
-#            ansible_distribution_version != "14.04")
-#  include: source.yml
+#         ansible_distribution_version == "12.04")
+- include: source.yml
 

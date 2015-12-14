@@ -31,9 +31,9 @@
 - name: Build lsyncd
   shell: /root/lsyncd-build.sh creates=/usr/local/bin/lsyncd
 
-- name: Configure lsyncd for source install
 - file: path=/var/log/lsyncd state=directory
-- template: src=lsyncd.conf.j2
+- name: Configure lsyncd for source install
+  template: src=lsyncd.conf.j2
         dest=/etc/lsyncd.conf
         owner=root
         group=root
